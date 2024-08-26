@@ -1,0 +1,18 @@
+apiVersion: v2
+name: rstuf-chart
+description: A Helm chart for deploying RSTUF services, PostgreSQL, and Redis together
+version: 0.1.0
+
+dependencies:
+  - name: rstuf-api
+    version: "0.1.0"
+    repository: "https://repository-service-tuf.github.io/helm-charts"
+  - name: rstuf-worker
+    version: "0.1.0"
+    repository: "https://repository-service-tuf.github.io/helm-charts"
+  - name: redis
+    version: "20.0.3"
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: postgresql
+    version: "15.5.24"
+    repository: "https://charts.bitnami.com/bitnami"
