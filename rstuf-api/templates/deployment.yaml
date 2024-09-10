@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rstuf-api.fullname" . }}
+  labels:
+    {{- include "rstuf-api.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rstuf-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rstuf-api.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rstuf-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: RSTUF_BROKER_SERVER
+              value:  {{ .Values.backend.brokerServer | quote }}
+            - name: RSTUF_REDIS_SERVER
+              value:  {{ .Values.backend.redisServer | quote }}
+            {{- if .Values.backend.redisPort }}
+            - name: RSTUF_REDIS_SERVER_PORT
+              value: {{ .Values.backend.redisPort | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbResult }}
+            - name: RSTUF_REDIS_SERVER_DB_RESULT
+              value: {{ .Values.backend.redisDbResult | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbSettings }}
+            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
+              value: {{ .Values.backend.redisDbSettings | quote }}
+            {{- end }}
+            {{- if .Values.backend.disabledEndpoints }}
+            - name: RSTUF_DISABLED_ENDPOINTS
+              value: {{ .Values.service.disabledEndpoints | quote }}
+            {{- end }}
+            {{- if .Values.service.ssl_cert }}
+            - name: SECRETS_RSTUF_SSL_CERT
+              value: {{ .Values.service.ssl_cert | quote }}
+            {{- end }}
+            {{- if .Values.service.ssl_key }}
+            - name: SECRETS_RSTUF_SSL_KEY
+              value: {{ .Values.service.ssl_key | quote }}
+            {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rstuf-worker.fullname" . }}
+  labels:
+    {{- include "rstuf-worker.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rstuf-worker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rstuf-worker.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rstuf-worker.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: RSTUF_BROKER_SERVER
+              value: {{ .Values.backend.brokerServer | quote }}
+            - name: RSTUF_REDIS_SERVER
+              value: {{ .Values.backend.redisServer | quote }}
+            - name: RSTUF_DB_SERVER
+              value: {{ .Values.backend.dbServer | quote }}
+            - name: RSTUF_STORAGE_BACKEND
+              value: {{ required "storage.type must be 'AWSS3' or 'LocalStorage'." .Values.storage.type | quote }}
+            {{- if eq .Values.storage.type "LocalStorage" }}
+            - name: RSTUF_LOCAL_STORAGE_BACKEND_PATH
+              value: {{ required "storage.backendPath is required when storage.type is 'LocalStorage'." .Values.storage.storagePath | quote }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "LocalStorage") .Values.storage.onlineKeyDir }}
+            - name: RSTUF_ONLINE_KEY_DIR
+              value: {{ .Values.storage.onlineKeyDir | quote }}
+            {{- end }}
+            {{- if eq .Values.storage.type "AWSS3" }}
+            - name: RSTUF_AWS_STORAGE_BUCKET
+              value: {{ required "storage.s3Bucket is required when storage.type is 'AWSS3'." .Values.storage.s3Bucket | quote }}
+            {{- end }}
+            {{- if eq .Values.storage.type "AWSS3" }}
+            - name: RSTUF_AWS_ACCESS_KEY_ID
+              value: {{ required "storage.s3KeyId is required when storage.type is 'AWSS3'." .Values.storage.s3KeyId | quote }}
+            {{- end }}
+            {{- if eq .Values.storage.type "AWSS3" }}
+            - name: RSTUF_AWS_SECRET_ACCESS_KEY
+              value: {{ required "storage.s3KeyId is required when storage.type is 'AWSS3'." .Values.storage.s3AccessKey | quote }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "AWSS3") .Values.storage.s3Region }}
+            - name: RSTUF_AWS_DEFAULT_REGION
+              value: {{ .Values.storage.s3Region | quote }}
+            {{- end }}
+            {{- if and (eq .Values.storage.type "AWSS3") .Values.storage.s3Endpoint }}
+            - name: RSTUF_AWS_ENDPOINT_URL
+              value: {{ .Values.storage.s3Endpoint | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisPort }}
+            - name: RSTUF_REDIS_SERVER_PORT
+              value: {{ .Values.backend.redisPort | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbResult }}
+            - name: RSTUF_REDIS_SERVER_DB_RESULT
+              value: {{ .Values.backend.redisDbResult | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbSettings }}
+            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
+              value: {{ .Values.backend.redisDbSettings | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbSettings }}
+            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
+              value: {{ .Values.backend.redisDbSettings | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisPort }}
+            - name: RSTUF_LOCK_TIMEOUT
+              value: {{ .Values.backend.lockTimeOut | quote }}
+            {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
