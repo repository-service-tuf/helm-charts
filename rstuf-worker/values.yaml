@@ -9,6 +9,26 @@ image:
   pullPolicy: IfNotPresent
   tag: "latest"
 
+livenessProbe:
+  exec:
+    # bash is needed to replace the environment variable
+    command: [
+      "bash",
+      "-c",
+      "celery inspect ping -A apps -d celery@$HOSTNAME"
+    ]
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 10
+readinessProbe:
+  exec:
+    command:
+      [
+        "/usr/local/bin/python",
+        "-c",
+        "\"import os;from celery.task.control import inspect;from app import app;exit(0 if os.environ['HOSTNAME'] in ','.join(inspect(app=app).stats().keys()) else 1)\""
+      ]
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
