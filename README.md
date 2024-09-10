@@ -25,8 +25,6 @@ To uninstall the chart:
 
     helm delete my-rstuf
 
-
-
 ### rstuf
 
 This chart deploys a TUF repository service and all the required dependencies.
