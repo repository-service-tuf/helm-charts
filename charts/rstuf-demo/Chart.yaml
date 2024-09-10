@@ -1,6 +1,6 @@
 apiVersion: v2
-name: rstuf-chart
-description: A Helm chart for deploying RSTUF services, PostgreSQL, and Redis together
+name: rstuf-demo
+description: RSTUF Demo deploying RSTUF services, PostgreSQL, and Redis together
 version: 0.1.0
 
 dependencies:
