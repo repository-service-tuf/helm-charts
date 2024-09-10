@@ -10,9 +10,27 @@ dependencies:
   - name: rstuf-worker
     version: "0.1.0"
     repository: "https://repository-service-tuf.github.io/helm-charts"
+  - name: postgresql
+    version: "15.5.28"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgres.enabled
   - name: redis
     version: "20.0.3"
     repository: "https://charts.bitnami.com/bitnami"
-  - name: postgresql
-    version: "15.5.24"
+    condition: redis.enabled
+  - name: valkey
+    version: "0.3.15"
     repository: "https://charts.bitnami.com/bitnami"
+    condition: valkey.enabled
+  - name: rabbitmq
+    version: "14.6.9"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: rabbitmq.enabled
+  - name: mysql
+    version: "11.1.16"
+    repository: https://charts.bitnami.com/bitnami
+    condition: mysql.enabled
+  - name: localstack
+    version: "0.6.16"
+    repository: "https://localstack.github.io/helm-charts"
+    condition: localstack.enabled

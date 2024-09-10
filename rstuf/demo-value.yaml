@@ -1,0 +1,88 @@
+rstuf-api:
+  image:
+    repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
+    tag: latest
+    imagePullPolicy: Never
+  backend:
+    brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+  ingress:
+    enabled: true
+    hosts:
+      - host: rstuf.localhost
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+rstuf-worker:
+  image:
+    repository: ghcr.io/repository-service-tuf/repository-service-tuf-work
+    tag: latest
+    imagePullPolicy: Never
+  backend:
+    dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
+    brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+  storage:
+    type: "AWSS3"
+    s3Bucket: "tuf-metadata"
+    s3KeyId: "s3-keyid"
+    s3AccessKey: "s3-access-key"
+    s3Region: "us-east-1"
+    s3Endpoint: "http://rstuf-localstack.rstuf.svc.cluster.local:4566"
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  persistence:
+    enabled: true
+    size: 2Gi
+  master:
+    service:
+      port: 6379
+
+postgresql:
+  enabled: true
+  auth:
+    username: postgres
+    password: postgres
+    database: rstuf
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi  # Adjust size as necessary
+  replication:
+    enabled: false
+  service:
+    port: 5432
+
+localstack:
+  enabled: true
+  debug: true
+  ingress:
+    enabled: true
+    metadata:
+      name: ingress-resource-backend
+    hosts:
+      - host: localstack.localhost
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+  enableStartupScripts: true
+  startupScriptContent: |
+    #!/bin/sh
+    awslocal kms create-key --key-spec RSA_4096 --key-usage SIGN_VERIFY
+    awslocal kms create-alias --alias-name alias/aws-test-key --target-key-id $(awslocal kms list-keys --query "Keys[0].KeyId" --output text)
+    awslocal s3 mb s3://tuf-metadata
+
+rabbitmq:
+  enabled: false
+valkey:
+  enabled: false
+
+mysql:
+  enabled: false
