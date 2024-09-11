@@ -2,7 +2,6 @@ rstuf-api:
   image:
     repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
     tag: latest
-    imagePullPolicy: Never
   backend:
     brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
     redisServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
@@ -19,7 +18,6 @@ rstuf-worker:
   image:
     repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
     tag: latest
-    imagePullPolicy: Never
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
     brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"

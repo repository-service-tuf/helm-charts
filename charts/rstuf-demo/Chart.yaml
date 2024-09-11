@@ -1,7 +1,7 @@
 apiVersion: v2
 name: rstuf-demo
 description: RSTUF Demo deploying RSTUF services and infrastructure services. This deployment is not recommended for production.
-version: 0.1.2
+version: 0.1.3
 
 dependencies:
   - name: rstuf-api
