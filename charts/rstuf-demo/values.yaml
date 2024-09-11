@@ -17,7 +17,7 @@ rstuf-api:
 
 rstuf-worker:
   image:
-    repository: ghcr.io/repository-service-tuf/repository-service-tuf-work
+    repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
     tag: latest
     imagePullPolicy: Never
   backend:
