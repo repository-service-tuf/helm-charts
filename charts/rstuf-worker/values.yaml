@@ -24,9 +24,9 @@ readinessProbe:
   exec:
     command:
       [
-        "RSTUF_WORKER_ID=$HOSTNAME /usr/local/bin/python",
+        "/usr/local/bin/python",
         "-c",
-        "\"import os;from app import app;exit(0 if os.environ['HOSTNAME'] in ','.join(app.control.inspect(app=app).stats().keys()) else 1)\""
+        "\"import os;os.environ['RSTUF_WORKER_ID']=os.environ['HOSTNAME'];from app import app;exit(0 if os.environ['HOSTNAME'] in ','.join(app.control.inspect(app=app).stats().keys()) else 1)\""
       ]
 
 imagePullSecrets: []
