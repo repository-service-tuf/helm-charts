@@ -15,7 +15,7 @@ livenessProbe:
     command: [
       "bash",
       "-c",
-      "celery inspect ping -A apps -d celery@$HOSTNAME"
+      "RSTUF_WORKER_ID=$HOSTNAME celery -A app inspect ping rstuf@$HOSTNAME,rstuf_jobs@$HOSTNAME"
     ]
   initialDelaySeconds: 30
   periodSeconds: 60
@@ -24,9 +24,9 @@ readinessProbe:
   exec:
     command:
       [
-        "/usr/local/bin/python",
+        "RSTUF_WORKER_ID=$HOSTNAME /usr/local/bin/python",
         "-c",
-        "\"import os;from celery.task.control import inspect;from app import app;exit(0 if os.environ['HOSTNAME'] in ','.join(inspect(app=app).stats().keys()) else 1)\""
+        "\"import os;from app import app;exit(0 if os.environ['HOSTNAME'] in ','.join(app.control.inspect(app=app).stats().keys()) else 1)\""
       ]
 
 imagePullSecrets: []
