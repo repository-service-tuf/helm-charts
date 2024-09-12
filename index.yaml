@@ -145,6 +145,16 @@ entries:
   rstuf-worker:
   - apiVersion: v2
     appVersion: 0.17.0b1
+    created: "2024-09-12T20:37:23.768409768Z"
+    description: A RSTUF Worker Helm chart for Kubernetes
+    digest: f9f9079e3efd7dd5cd4da413aa8178716f68e4bfeaaabee9db788c10b401524d
+    name: rstuf-worker
+    type: application
+    urls:
+    - https://github.com/repository-service-tuf/helm-charts/releases/download/rstuf-worker-0.1.2/rstuf-worker-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 0.17.0b1
     created: "2024-09-11T00:20:19.426241799Z"
     description: A RSTUF Worker Helm chart for Kubernetes
     digest: 6ef3966dc6c72504557031be74e5a6d2ecdf3202a0ba84f75fe156615f84964a
@@ -163,4 +173,4 @@ entries:
     urls:
     - rstuf-worker-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-11T00:45:48.423110887Z"
+generated: "2024-09-12T20:37:23.768431759Z"
