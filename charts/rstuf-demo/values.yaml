@@ -3,8 +3,8 @@ rstuf-api:
     repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
     tag: latest
   backend:
-    brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+    brokerServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
   ingress:
     enabled: true
     hosts:
@@ -20,8 +20,8 @@ rstuf-worker:
     tag: latest
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
-    brokerServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-redis-master.rstuf.svc.cluster.local"
+    brokerServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
   storage:
     type: "AWSS3"
     s3Bucket: "tuf-metadata"
@@ -30,7 +30,7 @@ rstuf-worker:
     s3Region: "us-east-1"
     s3Endpoint: "http://rstuf-localstack.rstuf.svc.cluster.local:4566"
 
-redis:
+valkey:
   enabled: true
   architecture: standalone
   auth:
@@ -41,6 +41,9 @@ redis:
   master:
     service:
       port: 6379
+
+redis:
+  enabled: false
 
 postgresql:
   enabled: true
@@ -78,8 +81,6 @@ localstack:
     awslocal s3 mb s3://tuf-metadata
 
 rabbitmq:
-  enabled: false
-valkey:
   enabled: false
 
 mysql:
