@@ -102,11 +102,7 @@ spec:
             - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
               value: {{ .Values.backend.redisDbSettings | quote }}
             {{- end }}
-            {{- if .Values.backend.redisDbSettings }}
-            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
-              value: {{ .Values.backend.redisDbSettings | quote }}
-            {{- end }}
-            {{- if .Values.backend.redisPort }}
+            {{- if .Values.backend.lockTimeOut }}
             - name: RSTUF_LOCK_TIMEOUT
               value: {{ .Values.backend.lockTimeOut | quote }}
             {{- end }}
