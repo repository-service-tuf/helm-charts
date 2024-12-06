@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1.0.0b1"
+  tag: "v1.0.0b2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -54,9 +54,12 @@ extraAnnotations: {}
 backend:
   brokerServer: redis://redis
   redisServer: redis://redis
-  redisPort: ""  # default is 5672
-  redisDbResult: "" # default is 0
-  redisDbSettings: "" # default is 1
+  # redisPort default is 5672
+  redisPort: ""
+  # redisDbResult default is 0
+  redisDbResult: ""
+  # redisDbSettings default is 1
+  redisDbSettings: ""
 
 ingress:
   enabled: false
