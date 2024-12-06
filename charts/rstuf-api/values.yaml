@@ -54,9 +54,12 @@ extraAnnotations: {}
 backend:
   brokerServer: redis://redis
   redisServer: redis://redis
-  redisPort: ""  # default is 5672
-  redisDbResult: "" # default is 0
-  redisDbSettings: "" # default is 1
+  # redisPort default is 5672
+  redisPort: ""
+  # redisDbResult default is 0
+  redisDbResult: ""
+  # redisDbSettings default is 1
+  redisDbSettings: ""
 
 ingress:
   enabled: false

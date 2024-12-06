@@ -1,6 +1,8 @@
 apiVersion: v2
 name: rstuf-api
 description: A RSTUF API Helm chart for Kubernetes
+maintainers:
+  - name: kairoaraujo
 
 # A chart can be either an 'application' or a 'library' chart.
 #
