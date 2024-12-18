@@ -1,14 +1,16 @@
 apiVersion: v2
 name: rstuf-demo
 description: RSTUF Demo deploying RSTUF services and infrastructure services. This deployment is not recommended for production.
-version: 0.2.1
+version: 0.3.0
+maintainers:
+  - name: kairoaraujo
 
 dependencies:
   - name: rstuf-api
     version: "0.2.1"
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: rstuf-worker
-    version: "0.2.0"
+    version: "0.3.0"
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: postgresql
     version: "15.5.28"
