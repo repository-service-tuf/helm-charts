@@ -37,10 +37,13 @@ storage:
     type: "AWSS3"    # AWSS3 or localStorage
     storagePath: ""  # required only when using `storageBackend` as "localStorage"
     s3Bucket: "tuf-metadata"
-    s3KeyId: "s3-keyid"
-    s3AccessKey: "s3-access-key"
-    s3Region: ""
-    s3Endpoint: ""
+aws:
+    accessKey: "s3-keyid"
+    secretKey: "s3-access-key"
+    region: ""
+    endpoint: ""
+gcp:
+    applicationCredentials: "" # Base64
 
 backend:
   brokerServer: "redis://redis"
