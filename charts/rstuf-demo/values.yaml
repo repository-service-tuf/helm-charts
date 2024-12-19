@@ -17,7 +17,7 @@ rstuf-api:
 rstuf-worker:
   image:
     repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
-    tag: latest
+    tag: dev
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
     brokerServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
@@ -25,10 +25,11 @@ rstuf-worker:
   storage:
     type: "AWSS3"
     s3Bucket: "tuf-metadata"
-    s3KeyId: "s3-keyid"
-    s3AccessKey: "s3-access-key"
-    s3Region: "us-east-1"
-    s3Endpoint: "http://rstuf-localstack.rstuf.svc.cluster.local:4566"
+  aws:
+    accessKey: "s3-keyid"
+    secretKey: "s3-access-key"
+    region: "us-east-1"
+    endpoint: "http://rstuf-localstack.rstuf.svc.cluster.local:4566"
 
 valkey:
   enabled: true
