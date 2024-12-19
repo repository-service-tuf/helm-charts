@@ -46,6 +46,11 @@ spec:
             {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+            {{- if .Values.gcp.applicationCredentials }}
+            - name: gcp-credentials-volume
+              mountPath: /run/secrets/gcp-credentials
+              readOnly: true
+            {{- end }}
             {{- if .Values.onlineKeyFile }}
             {{- range .Values.onlineKeyFile }}
             - name: {{ .keyid | printf "%.7s" }}-keyfile-volume
@@ -74,21 +79,21 @@ spec:
             - name: RSTUF_AWS_STORAGE_BUCKET
               value: {{ required "storage.s3Bucket is required when storage.type is 'AWSS3'." .Values.storage.s3Bucket | quote }}
             {{- end }}
-            {{- if eq .Values.storage.type "AWSS3" }}
+            {{- if .Values.aws.accessKey }}
             - name: RSTUF_AWS_ACCESS_KEY_ID
-              value: {{ required "storage.s3KeyId is required when storage.type is 'AWSS3'." .Values.storage.s3KeyId | quote }}
+              value: {{ .Values.aws.accessKey | quote }}
             {{- end }}
-            {{- if eq .Values.storage.type "AWSS3" }}
+            {{- if .Values.aws.secretKey  }}
             - name: RSTUF_AWS_SECRET_ACCESS_KEY
-              value: {{ required "storage.s3KeyId is required when storage.type is 'AWSS3'." .Values.storage.s3AccessKey | quote }}
+              value: {{ .Values.aws.secretKey | quote }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "AWSS3") .Values.storage.s3Region }}
+            {{- if .Values.storage.region }}
             - name: RSTUF_AWS_DEFAULT_REGION
-              value: {{ .Values.storage.s3Region | quote }}
+              value: {{ .Values.aws.region | quote }}
             {{- end }}
-            {{- if and (eq .Values.storage.type "AWSS3") .Values.storage.s3Endpoint }}
+            {{- if .Values.aws.endpoint }}
             - name: RSTUF_AWS_ENDPOINT_URL
-              value: {{ .Values.storage.s3Endpoint | quote }}
+              value: {{ .Values.aws.endpoint | quote }}
             {{- end }}
             {{- if .Values.backend.redisPort }}
             - name: RSTUF_REDIS_SERVER_PORT
@@ -106,9 +111,18 @@ spec:
             - name: RSTUF_LOCK_TIMEOUT
               value: {{ .Values.backend.lockTimeOut | quote }}
             {{- end }}
+            {{- if .Values.gcp.applicationCredentials }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /run/secrets/gcp-credentials/ac.json
+            {{- end }}
       volumes:
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.gcp.applicationCredentials }}
+        - name: gcp-credentials-volume
+          secret:
+            secretName: gcp-credentials
         {{- end }}
         {{- if .Values.onlineKeyFile }}
         {{- range .Values.onlineKeyFile }}

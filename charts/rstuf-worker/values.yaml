@@ -34,22 +34,30 @@ nameOverride: ""
 fullnameOverride: ""
 
 storage:
-    type: "AWSS3"    # AWSS3 or localStorage
-    storagePath: ""  # required only when using `storageBackend` as "localStorage"
-    s3Bucket: "tuf-metadata"
-    s3KeyId: "s3-keyid"
-    s3AccessKey: "s3-access-key"
-    s3Region: ""
-    s3Endpoint: ""
+  type: "AWSS3"    # AWSS3 or localStorage
+  storagePath: ""  # required only when using `storageBackend` as "localStorage"
+  s3Bucket: "tuf-metadata"
+aws:
+  accessKey: "s3-keyid"
+  secretKey: "s3-access-key"
+  region: ""
+  endpoint: ""
+gcp:
+  # Use applicationCredentials as base64
+  applicationCredentials: ""
 
 backend:
   brokerServer: "redis://redis"
   redisServer: "redis://redis"
   dbServer: "postgresql://postgres:password@postgres:5432"
-  lockTimeOut: "" # default 60 seconds
-  redisPort: ""  # default is 5672
-  redisDbResult: "" # default is 0
-  redisDbSettings: "" # default is 1
+  # lockTimeOut default 60 seconds
+  lockTimeOut: ""
+  # redisPort default is 5672
+  redisPort: ""
+  # redisDbResultdefault is 0
+  redisDbResult: ""
+  # redisDbSettings default is 1
+  redisDbSettings: ""
 
 # using online key as file in seccrets
 # onlineKeyDir: "/run/secrets"
