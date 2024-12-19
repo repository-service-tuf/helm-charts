@@ -42,4 +42,8 @@ jobs:
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --target-branch ${{ github.event.repository.default_branch }}
+        run: |
+          ct install --target-branch ${{ github.event.repository.default_branch }} \
+          --chart-repos=bitnami=https://charts.bitnami.com/bitnami \
+          --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
+          --chart-repos=localstack=https://localstack.github.io/helm-charts
