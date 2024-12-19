@@ -112,7 +112,7 @@ spec:
               value: {{ .Values.backend.lockTimeOut | quote }}
             {{- end }}
             {{- if .Values.gcp.applicationCredentials }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
+            - name: RSTUF_GOOGLE_APPLICATION_CREDENTIALS
               value: /run/secrets/gcp-credentials/ac.json
             {{- end }}
       volumes:
