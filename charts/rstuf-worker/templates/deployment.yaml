@@ -87,7 +87,7 @@ spec:
             - name: RSTUF_AWS_SECRET_ACCESS_KEY
               value: {{ .Values.aws.secretKey | quote }}
             {{- end }}
-            {{- if .Values.storage.region }}
+            {{- if .Values.aws.region }}
             - name: RSTUF_AWS_DEFAULT_REGION
               value: {{ .Values.aws.region | quote }}
             {{- end }}
