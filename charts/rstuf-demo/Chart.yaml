@@ -1,7 +1,7 @@
 apiVersion: v2
 name: rstuf-demo
 description: RSTUF Demo deploying RSTUF services and infrastructure services. This deployment is not recommended for production.
-version: 0.3.2
+version: 0.3.3
 maintainers:
   - name: kairoaraujo
 
