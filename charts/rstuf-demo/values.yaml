@@ -8,7 +8,7 @@ rstuf-api:
   ingress:
     enabled: true
     hosts:
-      - host: rstuf.localhost
+      - host: rstuf.local
         paths:
           - path: /
             pathType: ImplementationSpecific
@@ -69,7 +69,7 @@ localstack:
     metadata:
       name: ingress-resource-backend
     hosts:
-      - host: localstack.localhost
+      - host: localstack.local
         paths:
           - path: /
             pathType: ImplementationSpecific
