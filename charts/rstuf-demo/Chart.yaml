@@ -17,7 +17,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgres.enabled
   - name: redis
-    version: "20.0.3"
+    version: 20.11.3
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: valkey
