@@ -2,10 +2,10 @@ version: 2
 enable-beta-ecosystems: true
 updates:
   - package-ecosystem: "helm" 
-    directory: "/"
+    directory: "/charts/rstuf-demo/"
     schedule:
       interval: "daily"
       time: "10:00"
     commit-message:
-      prefix: "deps"
+      prefix: "deps-rstuf-demo"
       include: "scope"
