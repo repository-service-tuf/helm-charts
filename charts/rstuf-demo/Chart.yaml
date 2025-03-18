@@ -25,7 +25,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: valkey.enabled
   - name: rabbitmq
-    version: "14.6.9"
+    version: 15.3.3
     repository: "https://charts.bitnami.com/bitnami"
     condition: rabbitmq.enabled
   - name: mysql
