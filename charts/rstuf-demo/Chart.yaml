@@ -21,7 +21,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: valkey
-    version: "0.3.15"
+    version: 2.4.6
     repository: "https://charts.bitnami.com/bitnami"
     condition: valkey.enabled
   - name: rabbitmq
