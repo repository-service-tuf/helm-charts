@@ -3,8 +3,8 @@ rstuf-api:
     repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
     tag: latest
   backend:
-    brokerServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
+    brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
   ingress:
     enabled: true
     hosts:
@@ -20,8 +20,8 @@ rstuf-worker:
     tag: dev
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
-    brokerServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-valkey-master.rstuf.svc.cluster.local"
+    brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
+    redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
   storage:
     type: "AWSS3"
     s3Bucket: "tuf-metadata"
