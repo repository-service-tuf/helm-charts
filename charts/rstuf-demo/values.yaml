@@ -64,6 +64,8 @@ postgresql:
 localstack:
   enabled: true
   debug: true
+  persistence:
+    enabled: true
   ingress:
     enabled: true
     metadata:
