@@ -95,6 +95,10 @@ spec:
             - name: RSTUF_AWS_ENDPOINT_URL
               value: {{ .Values.aws.endpoint | quote }}
             {{- end }}
+            {{- if .Values.aws.s3_object_acl }}
+            - name: RSTUF_AWS_S3_OBJECT_ACL
+              value: {{ .Values.aws.s3_object_acl | quote }}
+            {{- end }}
             {{- if .Values.backend.redisPort }}
             - name: RSTUF_REDIS_SERVER_PORT
               value: {{ .Values.backend.redisPort | quote }}
