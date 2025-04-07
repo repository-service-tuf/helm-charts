@@ -42,6 +42,7 @@ aws:
   secretKey: "s3-access-key"
   region: ""
   endpoint: ""
+  s3_object_acl: ""  # default is public-read
 gcp:
   # Use applicationCredentials as base64
   applicationCredentials: ""
