@@ -10,7 +10,7 @@ dependencies:
     version: 0.2.2
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: rstuf-worker
-    version: 0.3.3
+    version: 0.4.0
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: postgresql
     version: 16.6.2
