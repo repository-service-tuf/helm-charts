@@ -13,19 +13,19 @@ dependencies:
     version: 0.4.0
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: postgresql
-    version: 16.6.2
+    version: 16.6.3
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgres.enabled
   - name: redis
-    version: 20.11.4
+    version: 20.11.5
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: valkey
-    version: 2.4.7
+    version: 3.0.2
     repository: "https://charts.bitnami.com/bitnami"
     condition: valkey.enabled
   - name: rabbitmq
-    version: 15.5.0
+    version: 15.5.1
     repository: "https://charts.bitnami.com/bitnami"
     condition: rabbitmq.enabled
   - name: mysql
