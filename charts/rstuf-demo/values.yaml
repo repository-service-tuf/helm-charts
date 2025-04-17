@@ -1,7 +1,4 @@
 rstuf-api:
-  image:
-    repository: ghcr.io/repository-service-tuf/repository-service-tuf-api
-    tag: latest
   backend:
     brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
     redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
@@ -15,9 +12,6 @@ rstuf-api:
     tls: []
 
 rstuf-worker:
-  image:
-    repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
-    tag: dev
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
     brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
