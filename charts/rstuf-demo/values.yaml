@@ -1,4 +1,8 @@
 rstuf-api:
+  initContainers:
+    - name: wait-for-valkey
+      image: busybox:1.37
+      command: ['sh', '-c', 'until nc -z rstuf-valkey-primary.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
   backend:
     brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
     redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
@@ -12,6 +16,13 @@ rstuf-api:
     tls: []
 
 rstuf-worker:
+  initContainers:
+    - name: wait-for-valkey
+      image: busybox:1.37
+      command: ['sh', '-c', 'until nc -z rstuf-valkey-primary.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
+    - name: wait-for-postgres
+      image: busybox:1.37
+      command: ['sh', '-c', 'until nc -z rstuf-postgresql.rstuf.svc.cluster.local 5432; do echo "waiting for Postgres..."; sleep 2; done;']
   backend:
     dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
     brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
