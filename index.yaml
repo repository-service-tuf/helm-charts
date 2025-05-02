@@ -81,6 +81,48 @@ entries:
     version: 0.1.0
   rstuf-demo:
   - apiVersion: v2
+    created: "2025-05-02T07:50:35.799938934Z"
+    dependencies:
+    - name: rstuf-api
+      repository: https://repository-service-tuf.github.io/helm-charts
+      version: 0.2.4
+    - name: rstuf-worker
+      repository: https://repository-service-tuf.github.io/helm-charts
+      version: 0.4.2
+    - condition: postgres.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.6.6
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 20.13.4
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.0.3
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.0.1
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.3.4
+    - condition: localstack.enabled
+      name: localstack
+      repository: https://localstack.github.io/helm-charts
+      version: 0.6.23
+    description: RSTUF Demo deploying RSTUF services and infrastructure services.
+      This deployment is not recommended for production.
+    digest: 05185af8fe6862ad2dc158fe3a8db2db48790f9a6d43a0c152d9c385d19bff27
+    maintainers:
+    - name: kairoaraujo
+    name: rstuf-demo
+    urls:
+    - https://github.com/repository-service-tuf/helm-charts/releases/download/rstuf-demo-0.3.11/rstuf-demo-0.3.11.tgz
+    version: 0.3.11
+  - apiVersion: v2
     created: "2025-04-18T10:43:05.815289197Z"
     dependencies:
     - name: rstuf-api
@@ -937,4 +979,4 @@ entries:
     urls:
     - rstuf-worker-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-02T07:35:13.886198866Z"
+generated: "2025-05-02T07:50:35.800147194Z"
