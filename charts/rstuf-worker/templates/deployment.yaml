@@ -55,6 +55,11 @@ spec:
               mountPath: /run/secrets/gcp-credentials
               readOnly: true
             {{- end }}
+            {{- if .Values.brokerSsl.enabled }}
+            - name: broker-ssl-certs-volume
+              mountPath: {{ .Values.brokerSsl.mountPath }}
+              readOnly: true
+            {{- end}}
             {{- if .Values.onlineKeyFile }}
             {{- range .Values.onlineKeyFile }}
             - name: {{ .keyid | printf "%.7s" }}-keyfile-volume
@@ -123,6 +128,16 @@ spec:
             - name: RSTUF_GOOGLE_APPLICATION_CREDENTIALS
               value: /run/secrets/gcp-credentials/ac.json
             {{- end }}
+            {{- if .Values.brokerSsl.enabled }}
+            - name: RSTUF_BROKER_SSL_ENABLE
+              value: "true"
+            - name: RSTUF_BROKER_SSL_KEYFILE
+              value: {{ cat .Values.brokerSsl.mountPath "/" .Values.brokerSsl.keyFileName | quote }}
+            - name: RSTUF_BROKER_SSL_CERTFILE
+              value: {{ cat .Values.brokerSsl.mountPath "/" .Values.brokerSsl.certFileName | quote }}
+            - name: RSTUF_BROKER_SSL_CA_CERTS
+              value: {{ cat .Values.brokerSsl.mountPath "/" .Values.brokerSsl.caFileName | quote }}
+            {{- end }}
       volumes:
         {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
@@ -138,6 +153,11 @@ spec:
           secret:
             secretName: {{ .keyid }}-keyfile-secret
         {{- end }}
+        {{- end }}
+        {{-if .Values.brokerSsl.enabled }}
+        - name: broker-ssl-certs-volume
+          secret:
+            secretName: broker-ssl-certs
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

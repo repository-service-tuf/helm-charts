@@ -60,6 +60,16 @@ backend:
   # redisDbSettings default is 1
   redisDbSettings: ""
 
+brokerSsl:
+  enabled: false
+  mountPath: "/run/secrets/broker_ssl"
+  keyData: ""
+  certData: ""
+  caData: ""
+  keyFileName: "tls.key"
+  certFileName: "tls.crt"
+  caFileName: "ca.crt"
+
 # using online key as file in seccrets
 # onlineKeyDir: "/run/secrets"
 # onlineKeyFile:
