@@ -33,6 +33,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: mysql.enabled
   - name: localstack
-    version: 0.6.24
+    version: 0.6.25
     repository: "https://localstack.github.io/helm-charts"
     condition: localstack.enabled
