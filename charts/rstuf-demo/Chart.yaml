@@ -1,7 +1,7 @@
 apiVersion: v2
 name: rstuf-demo
 description: RSTUF Demo deploying RSTUF services and infrastructure services. This deployment is not recommended for production.
-version: 0.3.11
+version: 0.3.12
 maintainers:
   - name: kairoaraujo
 
@@ -13,26 +13,26 @@ dependencies:
     version: 0.4.2
     repository: "https://repository-service-tuf.github.io/helm-charts"
   - name: postgresql
-    version: 16.6.6
+    version: 16.7.27
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgres.enabled
   - name: redis
-    version: 20.13.4
+    version: 22.0.6
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: valkey
-    version: 3.0.3
+    version: 3.0.31
     repository: "https://charts.bitnami.com/bitnami"
     condition: valkey.enabled
   - name: rabbitmq
-    version: 16.0.1
+    version: 16.0.14
     repository: "https://charts.bitnami.com/bitnami"
     condition: rabbitmq.enabled
   - name: mysql
-    version: 12.3.4
+    version: 14.0.3
     repository: https://charts.bitnami.com/bitnami
     condition: mysql.enabled
   - name: localstack
-    version: 0.6.23
+    version: 0.6.24
     repository: "https://localstack.github.io/helm-charts"
     condition: localstack.enabled
