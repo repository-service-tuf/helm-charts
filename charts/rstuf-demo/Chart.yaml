@@ -17,7 +17,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgres.enabled
   - name: redis
-    version: 22.0.6
+    version: 22.0.7
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: valkey
@@ -33,6 +33,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: mysql.enabled
   - name: localstack
-    version: 0.6.24
+    version: 0.6.25
     repository: "https://localstack.github.io/helm-charts"
     condition: localstack.enabled
