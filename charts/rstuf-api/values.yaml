@@ -31,17 +31,19 @@ podLabels: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
   # capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
 
 service:
   type: NodePort
   port: 80
+  targetPort: 8080
   ssl_cert: ""
   ssl_key: ""
   # Disable RSTUF API endpoints
