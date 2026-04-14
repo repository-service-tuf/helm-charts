@@ -1,0 +1,30 @@
+# Default values for rstuf-visualizer.
+replicaCount: 1
+
+image:
+  repository: tuf-visualizer
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 3000
+
+env:
+  NEXT_PUBLIC_RSTUF_API: "http://rstuf-api:80/api/v1/metadata/"
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -36,3 +36,7 @@ dependencies:
     version: 0.6.25
     repository: "https://localstack.github.io/helm-charts"
     condition: localstack.enabled
+  - name: rstuf-visualizer
+    version: 0.1.0
+    repository: "file://../rstuf-visualizer"
+    condition: rstuf-visualizer.enabled
