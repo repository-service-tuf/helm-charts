@@ -93,3 +93,13 @@ rabbitmq:
 
 mysql:
   enabled: false
+
+rstuf-visualizer:
+  enabled: true
+  env:
+    NEXT_PUBLIC_RSTUF_API: "http://rstuf-api:80/api/v1/metadata/"
+  # Optional: ensure it waits for the API to be ready
+  initContainers:
+    - name: wait-for-api
+      image: busybox:1.37
+      command: ['sh', '-c', 'until nc -z rstuf-api.rstuf.svc.cluster.local 80; do echo "waiting for RSTUF API..."; sleep 2; done;']

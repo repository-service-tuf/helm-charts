@@ -1,0 +1,8 @@
+apiVersion: v2
+name: rstuf-visualizer
+description: A TUF Metadata Visualizer Helm chart for RSTUF
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: kairoaraujo
