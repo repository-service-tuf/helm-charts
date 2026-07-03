@@ -55,4 +55,5 @@ jobs:
           --chart-repos=valkey=https://valkey.io/valkey-helm \
           --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
           --chart-repos=localstack=https://localstack.github.io/helm-charts \
-          --helm-extra-set-args="--set rstuf-worker.initContainers=null,rstuf-api.initContainers=null" \
+          --helm-extra-args="--namespace rstuf --create-namespace" \
+          --helm-extra-set-args="--set postgres.fullnameOverride=rstuf-demo-postgres,valkey.fullnameOverride=rstuf-demo-valkey,localstack.fullnameOverride=rstuf-demo-localstack,rstuf-worker.initContainers=null,rstuf-api.initContainers=null" \
