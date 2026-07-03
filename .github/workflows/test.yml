@@ -59,13 +59,12 @@ jobs:
         run: |
           changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
           if [[ "$changed" == *"charts/rstuf-demo"* ]]; then
+            kubectl create namespace rstuf --dry-run=client -o yaml | kubectl apply -f -
             ct install --charts charts/rstuf-demo \
             --namespace rstuf \
-            --release-name rstuf-demo \
             --chart-repos=cloudpirates=https://cloudpirates-io.github.io/helm-charts \
             --chart-repos=valkey=https://valkey.io/valkey-helm \
             --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
             --chart-repos=localstack=https://localstack.github.io/helm-charts \
-            --helm-extra-args="--create-namespace" \
-            --helm-extra-set-args="--set rstuf-worker.initContainers=null,rstuf-api.initContainers=null"
+            --helm-extra-set-args="--set postgres.fullnameOverride=rstuf-demo-postgres,valkey.fullnameOverride=rstuf-demo-valkey,localstack.fullnameOverride=rstuf-demo-localstack,rstuf-worker.initContainers=null,rstuf-api.initContainers=null"
           fi
