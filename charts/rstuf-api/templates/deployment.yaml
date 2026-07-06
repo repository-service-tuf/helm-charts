@@ -73,7 +73,7 @@ spec:
             {{- end }}
             {{- if .Values.backend.disabledEndpoints }}
             - name: RSTUF_DISABLED_ENDPOINTS
-              value: {{ .Values.service.disabledEndpoints | quote }}
+              value: {{ .Values.backend.disabledEndpoints | quote }}
             {{- end }}
             {{- if .Values.service.ssl_cert }}
             - name: SECRETS_RSTUF_SSL_CERT
