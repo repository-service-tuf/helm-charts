@@ -22,7 +22,10 @@ jobs:
           check-latest: true
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b
+        uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f
+        with:
+          version: "3.14.0"
+          yamale_version: "6.1.0"
 
       - name: Run chart-testing (list-changed)
         id: list-changed
@@ -34,7 +37,12 @@ jobs:
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --chart-repos=bitnami=https://charts.bitnami.com/bitnami
+        run: |
+          ct lint --target-branch ${{ github.event.repository.default_branch }} \
+          --chart-repos=cloudpirates=https://cloudpirates-io.github.io/helm-charts \
+          --chart-repos=valkey=https://valkey.io/valkey-helm \
+          --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
+          --chart-repos=localstack=https://localstack.github.io/helm-charts
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
@@ -44,7 +52,19 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           ct install --target-branch ${{ github.event.repository.default_branch }} \
-          --chart-repos=bitnami=https://charts.bitnami.com/bitnami \
-          --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
-          --chart-repos=localstack=https://localstack.github.io/helm-charts \
-          --helm-extra-set-args="--set rstuf-worker.initContainers=null,rstuf-api.initContainers=null" \
+          --excluded-charts rstuf-demo
+
+      - name: Run chart-testing (install rstuf-demo)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          if [[ "$changed" == *"charts/rstuf-demo"* ]]; then
+            kubectl create namespace rstuf --dry-run=client -o yaml | kubectl apply -f -
+            ct install --charts charts/rstuf-demo \
+            --namespace rstuf \
+            --chart-repos=cloudpirates=https://cloudpirates-io.github.io/helm-charts \
+            --chart-repos=valkey=https://valkey.io/valkey-helm \
+            --chart-repos=rstuf=https://repository-service-tuf.github.io/helm-charts \
+            --chart-repos=localstack=https://localstack.github.io/helm-charts \
+            --helm-extra-set-args="--set postgres.fullnameOverride=rstuf-demo-postgres,valkey.fullnameOverride=rstuf-demo-valkey,localstack.fullnameOverride=rstuf-demo-localstack,rstuf-worker.initContainers=null,rstuf-api.initContainers=null"
+          fi
