@@ -8,6 +8,10 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "rstuf-worker.selectorLabels" . | nindent 6 }}
@@ -59,7 +63,7 @@ spec:
             {{- range .Values.onlineKeyFile }}
             - name: {{ .keyid | printf "%.7s" }}-keyfile-volume
               mountPath: /run/secrets/{{ .keyid }}
-              subPath: {{ .keyid }}
+              subPath: {{ .secretKey | default .keyid }}
             {{- end }}
             {{- end }}
           env:
@@ -67,15 +71,46 @@ spec:
               value: {{ .Values.backend.brokerServer | quote }}
             - name: RSTUF_REDIS_SERVER
               value: {{ .Values.backend.redisServer | quote }}
+            {{- if .Values.backend.redisPort }}
+            - name: RSTUF_REDIS_SERVER_PORT
+              value: {{ .Values.backend.redisPort | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbResult }}
+            - name: RSTUF_REDIS_SERVER_DB_RESULT
+              value: {{ .Values.backend.redisDbResult | quote }}
+            {{- end }}
+            {{- if .Values.backend.redisDbSettings }}
+            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
+              value: {{ .Values.backend.redisDbSettings | quote }}
+            {{- end }}
+            {{- if .Values.backend.dbServer }}
             - name: RSTUF_DB_SERVER
               value: {{ .Values.backend.dbServer | quote }}
+            {{- else if .Values.backend.dbServerFrom }}
+            - name: RSTUF_DB_SERVER
+              {{- toYaml .Values.backend.dbServerFrom | nindent 14 }}
+            {{- end }}
+            {{- if .Values.backend.dbUser }}
+            - name: RSTUF_DB_USER
+              value: {{ .Values.backend.dbUser | quote }}
+            {{- else if .Values.backend.dbUserFrom }}
+            - name: RSTUF_DB_USER
+              {{- toYaml .Values.backend.dbUserFrom | nindent 14 }}
+            {{- end }}
+            {{- if .Values.backend.dbPassword }}
+            - name: RSTUF_DB_PASSWORD
+              value: {{ .Values.backend.dbPassword | quote }}
+            {{- else if .Values.backend.dbPasswordFrom }}
+            - name: RSTUF_DB_PASSWORD
+              {{- toYaml .Values.backend.dbPasswordFrom | nindent 14 }}
+            {{- end }}
             - name: RSTUF_STORAGE_BACKEND
               value: {{ required "storage.type must be 'AWSS3' or 'LocalStorage'." .Values.storage.type | quote }}
             {{- if eq .Values.storage.type "LocalStorage" }}
             - name: RSTUF_LOCAL_STORAGE_BACKEND_PATH
               value: {{ required "storage.backendPath is required when storage.type is 'LocalStorage'." .Values.storage.storagePath | quote }}
             {{- end }}
-            {{- if .Values.onlineKeyDir }}
+            {{- if and .Values.onlineKeyDir .Values.onlineKeyFile }}
             - name: RSTUF_ONLINE_KEY_DIR
               value: {{ .Values.onlineKeyDir | quote }}
             {{- end }}
@@ -86,10 +121,16 @@ spec:
             {{- if .Values.aws.accessKey }}
             - name: RSTUF_AWS_ACCESS_KEY_ID
               value: {{ .Values.aws.accessKey | quote }}
+            {{- else if .Values.aws.accessKeyFrom }}
+            - name: RSTUF_AWS_ACCESS_KEY_ID
+              {{- toYaml .Values.aws.accessKeyFrom | nindent 14 }}
             {{- end }}
-            {{- if .Values.aws.secretKey  }}
+            {{- if .Values.aws.secretKey }}
             - name: RSTUF_AWS_SECRET_ACCESS_KEY
               value: {{ .Values.aws.secretKey | quote }}
+            {{- else if .Values.aws.secretKeyFrom }}
+            - name: RSTUF_AWS_SECRET_ACCESS_KEY
+              {{- toYaml .Values.aws.secretKeyFrom | nindent 14 }}
             {{- end }}
             {{- if .Values.aws.region }}
             - name: RSTUF_AWS_DEFAULT_REGION
@@ -102,18 +143,6 @@ spec:
             {{- if .Values.aws.s3_object_acl }}
             - name: RSTUF_AWS_S3_OBJECT_ACL
               value: {{ .Values.aws.s3_object_acl | quote }}
-            {{- end }}
-            {{- if .Values.backend.redisPort }}
-            - name: RSTUF_REDIS_SERVER_PORT
-              value: {{ .Values.backend.redisPort | quote }}
-            {{- end }}
-            {{- if .Values.backend.redisDbResult }}
-            - name: RSTUF_REDIS_SERVER_DB_RESULT
-              value: {{ .Values.backend.redisDbResult | quote }}
-            {{- end }}
-            {{- if .Values.backend.redisDbSettings }}
-            - name: RSTUF_REDIS_SERVER_DB_REPO_SETTINGS
-              value: {{ .Values.backend.redisDbSettings | quote }}
             {{- end }}
             {{- if .Values.backend.lockTimeOut }}
             - name: RSTUF_LOCK_TIMEOUT
@@ -136,7 +165,7 @@ spec:
         {{- range .Values.onlineKeyFile }}
         - name: {{ .keyid | printf "%.7s" }}-keyfile-volume
           secret:
-            secretName: {{ .keyid }}-keyfile-secret
+            secretName: {{ .secretName | default (printf "%s-keyfile-secret" .keyid) }}
         {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}

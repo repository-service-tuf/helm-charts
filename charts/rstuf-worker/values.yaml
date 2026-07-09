@@ -4,6 +4,12 @@
 
 replicaCount: 1
 
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+
 image:
   repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
   pullPolicy: IfNotPresent
@@ -39,7 +45,18 @@ storage:
   s3Bucket: "tuf-metadata"
 aws:
   accessKey: "s3-keyid"
+  # accessKeyFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-s3-rw
+  #       key: ACCESS_KEY
   secretKey: "s3-access-key"
+  # secretKeyFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-s3-rw
+  #       key: SECRET_KEY
+  # Note: direct value takes priority over *From
   region: ""
   endpoint: ""
   s3_object_acl: ""  # default is public-read
@@ -50,29 +67,51 @@ gcp:
 backend:
   brokerServer: "redis://redis"
   redisServer: "redis://redis"
-  dbServer: "postgresql://postgres:password@postgres:5432"
-  # lockTimeOut default 60 seconds
-  lockTimeOut: ""
-  # redisPort default is 5672
+  # redisPort default is 6379
   redisPort: ""
-  # redisDbResultdefault is 0
+  # redisDbResult default is 0
   redisDbResult: ""
   # redisDbSettings default is 1
   redisDbSettings: ""
+  # To use dbServerFrom, set dbServer: ""
+  dbServer: "postgresql://postgres:password@postgres:5432"
+  # dbServerFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-database
+  #       key: RSTUF_DB_SERVER
+  # dbUser and dbPassword are required when dbServer is not a full URL with credentials
+  dbUser: ""
+  # dbUserFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-database
+  #       key: RSTUF_DB_USER
+  dbPassword: ""
+  # dbPasswordFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-database
+  #       key: RSTUF_DB_PASSWORD
+  # Note: direct value takes priority over *From
+  # lockTimeOut default 60 seconds
+  lockTimeOut: ""
 
-# using online key as file in seccrets
-# onlineKeyDir: "/run/secrets"
-# onlineKeyFile:
-#   - keyid: 0d9d3d4bad91c455bc03921daa95774576b86625ac45570d0cac025b08e65043
-#     # pem must be base64 encoded
-#     pem: |
-#       LS0tLS1CRUdJTi(...)
+onlineKeyDir: "/run/secrets"
+onlineKeyFile: []
+  # Variant 1: create secret from pem
+  # - keyid: 0d9d3d4bad91c455bc03921daa95774576b86625ac45570d0cac025b08e65043
+  #   pem: LS0tLS1CRUdJTi(...)
+  # Variant 2: use existing secret
+  # - keyid: 0d9d3d4bad91c455bc03921daa95774576b86625ac45570d0cac025b08e65043
+  #   secretName: my-secret
+  #   secretKey: key-in-secret  # defaults to keyid
 
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Automatically mount a ServiceAccount's API credentials?
-  automount: true
+  automount: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
