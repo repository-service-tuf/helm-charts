@@ -2,10 +2,10 @@ rstuf-api:
   initContainers:
     - name: wait-for-valkey
       image: busybox:1.37
-      command: ['sh', '-c', 'until nc -z rstuf-valkey-primary.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
+      command: ['sh', '-c', 'until nc -z rstuf-demo-valkey.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
   backend:
-    brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
+    brokerServer: redis://rstuf-demo-valkey.rstuf.svc.cluster.local
+    redisServer: redis://rstuf-demo-valkey.rstuf.svc.cluster.local
   ingress:
     enabled: true
     hosts:
@@ -19,14 +19,14 @@ rstuf-worker:
   initContainers:
     - name: wait-for-valkey
       image: busybox:1.37
-      command: ['sh', '-c', 'until nc -z rstuf-valkey-primary.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
+      command: ['sh', '-c', 'until nc -z rstuf-demo-valkey.rstuf.svc.cluster.local 6379 ; do echo "waiting for Valkey..."; sleep 2; done;']
     - name: wait-for-postgres
       image: busybox:1.37
-      command: ['sh', '-c', 'until nc -z rstuf-postgresql.rstuf.svc.cluster.local 5432; do echo "waiting for Postgres..."; sleep 2; done;']
+      command: ['sh', '-c', 'until nc -z rstuf-demo-postgres.rstuf.svc.cluster.local 5432; do echo "waiting for Postgres..."; sleep 2; done;']
   backend:
-    dbServer: "postgresql://postgres:postgres@rstuf-postgresql.rstuf.svc.cluster.local/rstuf"
-    brokerServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
-    redisServer: "redis://rstuf-valkey-primary.rstuf.svc.cluster.local"
+    dbServer: "postgresql://postgres:postgres@rstuf-demo-postgres.rstuf.svc.cluster.local/rstuf"
+    brokerServer: redis://rstuf-demo-valkey.rstuf.svc.cluster.local
+    redisServer: redis://rstuf-demo-valkey.rstuf.svc.cluster.local
   storage:
     type: "AWSS3"
     s3Bucket: "tuf-metadata"
@@ -34,40 +34,34 @@ rstuf-worker:
     accessKey: "s3-keyid"
     secretKey: "s3-access-key"
     region: "us-east-1"
-    endpoint: "http://rstuf-localstack.rstuf.svc.cluster.local:4566"
+    endpoint: "http://rstuf-demo-localstack.rstuf.svc.cluster.local:4566"
 
 valkey:
   enabled: true
-  architecture: standalone
   auth:
     enabled: false
-  persistence:
+  service:
+    port: 6379
+  dataStorage:
     enabled: true
-    size: 2Gi
-  master:
-    service:
-      port: 6379
+    requestedSize: 2Gi
 
-redis:
-  enabled: false
-
-postgresql:
+postgres:
   enabled: true
   auth:
     username: postgres
     password: postgres
     database: rstuf
-  primary:
-    persistence:
-      enabled: true
-      size: 8Gi  # Adjust size as necessary
-  replication:
-    enabled: false
+  persistence:
+    enabled: true
+    size: 8Gi
   service:
     port: 5432
 
 localstack:
   enabled: true
+  image:
+    tag: "4.4.0"
   debug: true
   persistence:
     enabled: true
@@ -87,9 +81,3 @@ localstack:
     awslocal kms create-key --key-spec RSA_4096 --key-usage SIGN_VERIFY
     awslocal kms create-alias --alias-name alias/aws-test-key --target-key-id $(awslocal kms list-keys --query "Keys[0].KeyId" --output text)
     awslocal s3 mb s3://tuf-metadata
-
-rabbitmq:
-  enabled: false
-
-mysql:
-  enabled: false
