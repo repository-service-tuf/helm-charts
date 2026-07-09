@@ -93,6 +93,36 @@ entries:
     version: 0.1.0
   rstuf-demo:
   - apiVersion: v2
+    created: "2026-07-09T18:54:24.518323591Z"
+    dependencies:
+    - name: rstuf-api
+      repository: https://repository-service-tuf.github.io/helm-charts
+      version: 0.2.5
+    - name: rstuf-worker
+      repository: https://repository-service-tuf.github.io/helm-charts
+      version: 0.4.3
+    - condition: postgres.enabled
+      name: postgres
+      repository: https://cloudpirates-io.github.io/helm-charts
+      version: 0.19.6
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm
+      version: 0.10.0
+    - condition: localstack.enabled
+      name: localstack
+      repository: https://localstack.github.io/helm-charts
+      version: 0.6.25
+    description: RSTUF Demo deploying RSTUF services and infrastructure services.
+      This deployment is not recommended for production.
+    digest: c2ca68e99ba067280df610660b75ee64e3230144c593acd94f04b13cfd2ffa30
+    maintainers:
+    - name: kairoaraujo
+    name: rstuf-demo
+    urls:
+    - https://github.com/repository-service-tuf/helm-charts/releases/download/rstuf-demo-0.3.15/rstuf-demo-0.3.15.tgz
+    version: 0.3.15
+  - apiVersion: v2
     created: "2025-08-29T13:21:45.555874195Z"
     dependencies:
     - name: rstuf-api
@@ -1129,4 +1159,4 @@ entries:
     urls:
     - rstuf-worker-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-29T13:21:45.556063471Z"
+generated: "2026-07-09T18:54:24.518459335Z"
