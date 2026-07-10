@@ -104,6 +104,16 @@ spec:
             - name: RSTUF_DB_PASSWORD
               {{- toYaml .Values.backend.dbPasswordFrom | nindent 14 }}
             {{- end }}
+            {{- if .Values.backend.dbKeepAlive }}
+            - name: RSTUF_DB_KEEPALIVE
+              value: "true"
+            - name: RSTUF_DB_KEEPALIVE_IDLE
+              value: {{ .Values.backend.dbKeepAliveIdle | quote }}
+            - name: RSTUF_DB_KEEPALIVE_INTERVAL
+              value: {{ .Values.backend.dbKeepAliveInterval | quote }}
+            - name: RSTUF_DB_KEEPALIVE_COUNT
+              value: {{ .Values.backend.dbKeepAliveCount | quote }}
+            {{- end }}
             - name: RSTUF_STORAGE_BACKEND
               value: {{ required "storage.type must be 'AWSS3' or 'LocalStorage'." .Values.storage.type | quote }}
             {{- if eq .Values.storage.type "LocalStorage" }}
