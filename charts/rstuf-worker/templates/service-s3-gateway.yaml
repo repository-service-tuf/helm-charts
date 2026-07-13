@@ -1,0 +1,21 @@
+{{- if and .Values.s3Gateway.enabled (eq .Values.storage.type "AWSS3") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rstuf-worker.s3GatewayFullname" . }}
+  {{- with .Values.s3Gateway.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "rstuf-worker.s3GatewayLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.s3Gateway.service.type }}
+  ports:
+    - port: {{ .Values.s3Gateway.service.port }}
+      targetPort: {{ .Values.s3Gateway.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "rstuf-worker.s3GatewaySelectorLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,108 @@
+{{- if and .Values.s3Gateway.enabled (eq .Values.storage.type "AWSS3") }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rstuf-worker.s3GatewayFullname" . }}
+  {{- with .Values.s3Gateway.podAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "rstuf-worker.s3GatewayLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "rstuf-worker.s3GatewaySelectorLabels" . | nindent 6 }}
+  {{- if not .Values.s3Gateway.autoscaling.enabled }}
+  replicas: {{ .Values.s3Gateway.replicaCount }}
+  {{- end }}
+  {{- with .Values.s3Gateway.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.s3Gateway.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rstuf-worker.s3GatewayLabels" . | nindent 8 }}
+        {{- with .Values.s3Gateway.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.s3Gateway.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: nginx-s3-gateway
+          image: "{{ .Values.s3Gateway.image.registry }}/{{ .Values.s3Gateway.image.repository }}:{{ .Values.s3Gateway.image.tag }}"
+          imagePullPolicy: {{ .Values.s3Gateway.image.pullPolicy }}
+          env:
+            - name: ALLOW_DIRECTORY_LIST
+              value: {{ .Values.s3Gateway.allowDirectoryList | quote }}
+            - name: PROXY_CACHE_VALID_OK
+              value: {{ .Values.s3Gateway.proxyCacheValid.ok | quote }}
+            - name: PROXY_CACHE_VALID_NOTFOUND
+              value: {{ .Values.s3Gateway.proxyCacheValid.notFound | quote }}
+            - name: PROXY_CACHE_VALID_FORBIDDEN
+              value: {{ .Values.s3Gateway.proxyCacheValid.forbidden | quote }}
+            - name: AWS_SIGS_VERSION
+              value: {{ .Values.s3Gateway.awsSigsVersion | quote }}
+            - name: S3_STYLE
+              value: {{ .Values.s3Gateway.s3Style | quote }}
+            - name: S3_SERVER
+              value: {{ .Values.s3Gateway.s3Endpoint | quote }}
+            - name: S3_SERVER_PORT
+              value: {{ .Values.s3Gateway.s3ServerPort | quote }}
+            - name: S3_SERVER_PROTO
+              value: {{ .Values.s3Gateway.s3ServerProto | quote }}
+            - name: S3_REGION
+              value: {{ .Values.aws.region | quote }}
+            - name: S3_BUCKET_NAME
+              value: {{  .Values.storage.s3Bucket | quote }}
+            {{- if .Values.s3Gateway.accessKey }}
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.s3Gateway.accessKey | quote }}
+            {{- else if .Values.s3Gateway.accessKeyFrom }}
+            - name: AWS_ACCESS_KEY_ID
+              {{- toYaml .Values.s3Gateway.accessKeyFrom | nindent 14 }}
+            {{- end }}
+            {{- if .Values.s3Gateway.secretKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.s3Gateway.secretKey | quote }}
+            {{- else if .Values.s3Gateway.secretKeyFrom }}
+            - name: AWS_SECRET_ACCESS_KEY
+              {{- toYaml .Values.s3Gateway.secretKeyFrom | nindent 14 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            {{- toYaml .Values.s3Gateway.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.s3Gateway.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.s3Gateway.readinessProbe | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.s3Gateway.securityContext | nindent 12 }}
+      serviceAccountName: {{ include "rstuf-worker.s3GatewayServiceAccountName" . }}
+      {{- with .Values.s3Gateway.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.s3Gateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.s3Gateway.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.s3Gateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

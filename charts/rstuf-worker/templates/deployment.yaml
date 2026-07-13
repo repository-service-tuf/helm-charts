@@ -64,6 +64,7 @@ spec:
             - name: {{ .keyid | printf "%.7s" }}-keyfile-volume
               mountPath: /run/secrets/{{ .keyid }}
               subPath: {{ .secretKey | default .keyid }}
+              readOnly: true
             {{- end }}
             {{- end }}
           env:
