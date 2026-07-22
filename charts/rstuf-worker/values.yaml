@@ -94,6 +94,11 @@ backend:
   #       name: rstuf-database
   #       key: RSTUF_DB_PASSWORD
   # Note: direct value takes priority over *From
+  # Database keepalive settings
+  dbKeepAlive: false
+  dbKeepAliveIdle: 30
+  dbKeepAliveInterval: 5
+  dbKeepAliveCount: 3
   # lockTimeOut default 60 seconds
   lockTimeOut: ""
 
