@@ -41,9 +41,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 storage:
-  type: "AWSS3" # AWSS3 or localStorage
-  storagePath: "" # required only when using `storageBackend` as "localStorage"
-  s3Bucket: "tuf-metadata" # Deprecated, kept for backward compatibility. Will be removed in a future release. Use `aws.s3Bucket` instead.
+  type: "AWSS3"             # AWSS3 or localStorage
+  storagePath: ""           # required only when using `storageBackend` as "localStorage"
+  s3Bucket: "tuf-metadata"  # Deprecated, kept for backward compatibility. Will be removed in a future release. Use `aws.s3Bucket` instead.
 aws:
   endpoint: ""
   region: ""
@@ -61,7 +61,7 @@ aws:
   #       name: rstuf-s3-rw
   #       key: SECRET_KEY
   # Note: direct value takes priority over *From
-  s3_object_acl: "" # default is public-read
+  s3_object_acl: ""  # default is public-read
 gcp:
   # Use applicationCredentials as base64
   applicationCredentials: ""
