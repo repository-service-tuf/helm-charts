@@ -13,7 +13,7 @@ strategy: {}
 image:
   repository: ghcr.io/repository-service-tuf/repository-service-tuf-worker
   pullPolicy: IfNotPresent
-  tag: "v1.0.0"
+  tag: ""
 
 livenessProbe:
   exec:
