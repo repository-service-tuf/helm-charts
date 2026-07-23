@@ -62,7 +62,7 @@ spec:
             - name: S3_REGION
               value: {{ .Values.aws.region | quote }}
             - name: S3_BUCKET_NAME
-              value: {{  .Values.storage.s3Bucket | quote }}
+              value: {{ (.Values.aws.s3Bucket | default .Values.storage.s3Bucket) | quote }}
             {{- if .Values.s3Gateway.accessKey }}
             - name: AWS_ACCESS_KEY_ID
               value: {{ .Values.s3Gateway.accessKey | quote }}
@@ -76,6 +76,9 @@ spec:
             {{- else if .Values.s3Gateway.secretKeyFrom }}
             - name: AWS_SECRET_ACCESS_KEY
               {{- toYaml .Values.s3Gateway.secretKeyFrom | nindent 14 }}
+            {{- end }}
+            {{- with .Values.s3Gateway.extraEnv }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
           ports:
             - name: http

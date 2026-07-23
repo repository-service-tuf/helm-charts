@@ -61,6 +61,8 @@ backend:
   # See https://repository-service-tuf.readthedocs.io/en/stable/guide/repository-service-tuf-api/Docker_README.html#optional-rstuf-disabled-endpoints
   disabledEndpoints: ""
 
+extraEnv: []
+
 ingress:
   enabled: false
   className: ""
