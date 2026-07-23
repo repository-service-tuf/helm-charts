@@ -60,3 +60,38 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+S3 Gateway fullname
+*/}}
+{{- define "rstuf-worker.s3GatewayFullname" -}}
+{{- printf "%s-s3-gateway" (include "rstuf-worker.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+S3 Gateway labels
+*/}}
+{{- define "rstuf-worker.s3GatewayLabels" -}}
+helm.sh/chart: {{ include "rstuf-worker.chart" . }}
+{{ include "rstuf-worker.s3GatewaySelectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+S3 Gateway selector labels
+*/}}
+{{- define "rstuf-worker.s3GatewaySelectorLabels" -}}
+app.kubernetes.io/name: s3-gateway
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+S3 Gateway service account name
+*/}}
+{{- define "rstuf-worker.s3GatewayServiceAccountName" -}}
+{{- if .Values.s3Gateway.serviceAccount.create }}
+{{- default (include "rstuf-worker.s3GatewayFullname" .) .Values.s3Gateway.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.s3Gateway.serviceAccount.name }}
+{{- end }}
+{{- end }}

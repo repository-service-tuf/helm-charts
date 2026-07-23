@@ -110,7 +110,7 @@ onlineKeyFile: []
   # Variant 2: use existing secret
   # - keyid: 0d9d3d4bad91c455bc03921daa95774576b86625ac45570d0cac025b08e65043
   #   secretName: my-secret
-  #   secretKey: key-in-secret  # defaults to keyid
+  #   secretKey: 0d9d3d4bad91c455bc03921daa95774576b86625ac45570d0cac025b08e65043  # defaults to keyid
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -174,3 +174,94 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+s3Gateway:
+  enabled: false
+  replicaCount: 1
+  strategy:
+    type: RollingUpdate
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  imagePullSecrets: []
+  image:
+    registry: docker.io
+    repository: nginxinc/nginx-s3-gateway
+    tag: "unprivileged-oss-20260413"
+    pullPolicy: IfNotPresent
+  allowDirectoryList: false
+  proxyCacheValid:
+    ok: "0"
+    notFound: "0"
+    forbidden: "0"
+  awsSigsVersion: 4
+  s3Style: "default"
+  s3Endpoint: ""
+  s3ServerPort: "443"
+  s3ServerProto: "https"
+  # Minimal required: read-only S3 credentials
+  accessKey: ""
+  # accessKeyFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-s3-ro
+  #       key: ACCESS_KEY
+  secretKey: ""
+  # secretKeyFrom:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: rstuf-s3-ro
+  #       key: SECRET_KEY
+  # Note: direct value takes priority over *From
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  livenessProbe:
+    httpGet:
+      port: http
+      path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    timeoutSeconds: 5
+  readinessProbe:
+    httpGet:
+      port: http
+      path: /health
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  podSecurityContext: {}
+  podAnnotations: {}
+  podLabels: {}
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automount: false
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+    annotations: {}
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: rstuf.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
