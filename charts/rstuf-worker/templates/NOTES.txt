@@ -1,0 +1,11 @@
+{{- if and (eq .Values.storage.type "AWSS3") (not .Values.aws.s3Bucket) }}
+WARNING - DEPRECATION:
+  .Values.storage.s3Bucket is deprecated and will be removed in a future release.
+  Please migrate to .Values.aws.s3Bucket instead.
+
+  Migration: in your values.yaml, move:
+    storage:
+      s3Bucket: "your-bucket"       ← remove this line
+    aws:
+      s3Bucket: "your-bucket"       ← add this line
+{{- end }}

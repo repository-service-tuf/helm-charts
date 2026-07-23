@@ -83,6 +83,9 @@ spec:
             - name: SECRETS_RSTUF_SSL_KEY
               value: {{ .Values.service.ssl_key | quote }}
             {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
